@@ -19,6 +19,20 @@ var CalendarConstructor = function() {
 		"November",
 		"December"
 	];
+	this.monthShort = [
+		"Jan",
+		"Feb",
+		"Mar",
+		"Apr",
+		"May",
+		"Jun",
+		"Jul",
+		"Aug",
+		"Sep",
+		"Oct",
+		"Nov",
+		"Dec"
+	]
 	
 };
 
@@ -48,6 +62,22 @@ CalendarConstructor.prototype.monthData = function(month, year) {
   
 	return monthData;
 };
+
+CalendarConstructor.prototype.dispayMonth = function() {
+	var monthTable = this.createNewElement("table", "monthDisplay");
+	//monthTable.appendChild(this.createMonthTableHead());
+	var tbody = this.createNewElement("tbody", "month-body");
+	monthTable.appendChild(tbody);
+		for(var j = 0; j < this.monthShort.length; j++) {
+			if(j == 0 || j == 4 || j ==8 ) {
+				var tr = document.createElement("tr");
+			}
+			tr.innerHTML += "<th>" + this.monthShort[j] + "</th>";2
+			tbody.appendChild(tr);
+		}
+		
+	return monthTable;
+}
 
 CalendarConstructor.prototype.getMonthName = function(monthNumber) {
 	for	( var i = 0; i < this.monthNames.length; i++ ) {
@@ -115,7 +145,6 @@ CalendarConstructor.prototype.createMonthNameWrap = function(monthData) {
 
 CalendarConstructor.prototype.createMonthWrapper = function(monthData) {
 	var div = this.createNewElement("div", "calendar-wrap");
-	div.appendChild(this.createMonthNameWrap(monthData));
 	div.appendChild(this.createMonthTableWrap(monthData));
 	return div;	
 }
@@ -133,21 +162,29 @@ CalendarConstructor.prototype.updateMonthData = function(monthData, counter) {
 	return monthData;
 }
 
-CalendarConstructor.prototype.parseInputData = function(id, month, year) {
+CalendarConstructor.prototype.parseInputData = function(id, monthId, month, year) {
     this.startMonth = month > 11 || month === undefined ? this.currentMonth : month;
     this.startMonthsYear = year < 1970 || year === undefined ? this.currentYear : year;
 	this.containerId = id;
+	this.monthId = monthId;
 }
 
-CalendarConstructor.prototype.renderCalendar = function(id, month, year) {
-	this.parseInputData(id, month, year);
+CalendarConstructor.prototype.renderCalendar = function(id,monthId, month, year) {
+	this.parseInputData(id, monthId, month, year);
 	var monthData = this.monthData(this.startMonth, this.startMonthsYear);
     var calendarContainer = document.getElementById(this.containerId);
     this.counter = 0;
-    var updatedData = this.updateMonthData(monthData, this.counter);
+	var updatedData = this.updateMonthData(monthData, this.counter);
+	var monthContainer = document.getElementById(this.monthId);
+	//monthContainer.appendChild(this.createMonthNameWrap(monthData));
+	var monthDisplayer = document.getElementById('month-displayer')
+	monthDisplayer.appendChild(this.dispayMonth())
 	calendarContainer.appendChild(this.createMonthWrapper(updatedData));
+
 }
+
+
 
 var calendar = new CalendarConstructor();
 
-calendar.renderCalendar("calendar", 2017, 9);
+calendar.renderCalendar("calendar","monthContainer", 2017, 9);
